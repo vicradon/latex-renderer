@@ -1,0 +1,20 @@
+{{define "title"}}Result{{end}}
+
+{{define "content"}}
+<section class="card">
+  <h2>Rendered Output</h2>
+  {{if .Error}}
+    <div class="error">{{.Error}}</div>
+  {{else}}
+    <div class="rendered-container">
+      <img src="{{.ImagePath}}" alt="Rendered LaTeX" class="rendered-img"/>
+      <div class="action-buttons">
+        <button id="downloadBtn" class="secondary-button">Download</button>
+        <button id="copyBtn" class="secondary-button">Copy to Clipboard</button>
+      </div>
+    </div>
+  {{end}}
+
+  <a href="/" class="button">Render Another</a>
+</section>
+{{end}}:wq
