@@ -1,23 +1,26 @@
 package main
 
 import (
-        "log"
+	"log"
+	"net/http"
 
-        "github.com/gin-gonic/gin"
-        "github.com/vicradon/latex-renderer/internal/handlers"
+	"github.com/gin-gonic/gin"
+	"github.com/vicradon/latex-renderer/internal/handlers"
 )
 
 func main() {
-        r := gin.Default()
-        r.Static("/static", "./static")
+	r := gin.Default()
+	r.Static("/static", "./static")
+	r.LoadHTMLGlob("templates/*")
 
-        r.LoadHTMLGlob("templates/*.html")
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title": "LaTeX Renderer",
+		})
+	})
 
-        handler := handlers.New()
+	r.POST("/render", handlers.RenderLatex)
 
-        r.GET("/", handler.Index)
-        r.POST("/render", handler.Render)
-
-        log.Println("server running on http://0.0.0.0:1026")
-        r.Run(":1026")
+	log.Println("Server running on http://0.0.0.0:1026")
+	r.Run(":1026")
 }
