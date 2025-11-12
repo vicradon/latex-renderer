@@ -10,14 +10,28 @@ jobs:
   deploy_chess_agent:
     runs-on: ubuntu-latest
     if: github.event.repository.fork == false
+
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
+
     steps:
-      - name: Restart App
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy and restart app
+        run: |
+          ssh $SSH_USER@$SSH_HOST << 'EOF'
             cd /var/www/latex-renderer
             git pull origin main
-            go get 
+            go get
+          EOF
+
