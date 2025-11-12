@@ -22,11 +22,8 @@ jobs:
 
       - name: Set up SSH
         run: |
-          mkdir -p ~/.ssh
-          cat > ~/.ssh/id_ed25519 <<'EOF'
-          $SSH_KEY
-          EOF
-          chmod 600 ~/.ssh/id_ed25519
+          echo ${{ secrets.SSH_KEY }} > key.pem
+          chmod 600 key.pem
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
 
       - name: Test SSH connection
