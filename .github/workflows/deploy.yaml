@@ -1,0 +1,23 @@
+name: Deploy Latex Renderer
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_chess_agent:
+    runs-on: ubuntu-latest
+    if: github.event.repository.fork == false
+    steps:
+      - name: Restart App
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /var/www/latex-renderer
+            git pull origin main
+            go get 
