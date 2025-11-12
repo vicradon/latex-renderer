@@ -23,7 +23,7 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir ~/.ssh
-          echo $SSH_KEY > key.pem
+          echo ${{ secrets.SSH_KEY }} > key.pem
           chmod 600 key.pem 
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
 
