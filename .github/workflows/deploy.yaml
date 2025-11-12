@@ -24,6 +24,7 @@ jobs:
         run: |
           echo ${{ secrets.SSH_KEY }} > key.pem
           chmod 600 key.pem
+          mkdir ~/.ssh
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
 
       - name: Test SSH connection
