@@ -23,13 +23,19 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          cat > ~/.ssh/id_rsa <<'EOF'
+          $SSH_KEY
+          EOF
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
 
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "echo ✅ SSH connection successful"
+
       - name: Deploy and restart app
         run: |
-          ssh $SSH_USER@$SSH_HOST << 'EOF'
+          ssh $SSH_USER@$SSH_HOST <<'EOF'
             cd /var/www/latex-renderer
             git pull origin main
             go get
